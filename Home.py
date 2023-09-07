@@ -17,10 +17,10 @@ def show_image(image):
     """Save the image plot to a file."""
     plt.show()
 
-st.title('Image Upload and Process')
+st.title('ID Card Verification Demo - Basic')
 
 # Upload the image
-uploaded_file = st.file_uploader("Choose an image...", type=['jpg', 'png'])
+uploaded_file = st.file_uploader("Please choose an image...", type=['jpg', 'png'])
 
 if uploaded_file is not None:
     img = read_image(uploaded_file)
