@@ -15,7 +15,7 @@ def write_image(image, path):
 
 def show_image(image):
     """Save the image plot to a file."""
-    plt.show(image)
+    plt.show()
 
 st.title('Image Upload and Process')
 
