@@ -44,7 +44,8 @@ Users are provided with an option to upload an image file (JPG or PNG).
 6. The extracted text is displayed in a text area in the app.
 """)
 
-
+st.subheader("Run Application')
+             
 # Upload the image
 uploaded_file = st.file_uploader("Please choose an image...", type=['jpg', 'png'])
 
