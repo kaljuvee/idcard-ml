@@ -18,6 +18,31 @@ def show_image(image):
     plt.show()
 
 st.title('ID Card Verification Demo - Basic')
+st.header('Overview')'
+st.markdown("""
+### Libraries Used
+
+- **streamlit**: Used to create the web app.
+- **PIL (Python Imaging Library)**: Utilized to open, manipulate, and save various formats of image files.
+- **cv2 (OpenCV)**: Facilitates image processing tasks including converting the image to grayscale and binarization.
+- **matplotlib**: Employed to display images within the Streamlit app.
+- **pytesseract**: A Python binding for Google's Tesseract-OCR Engine, leveraged to extract text from the image.
+- **numpy**: Assists in working with arrays.
+
+### App Overview
+
+Users are provided with an option to upload an image file (JPG or PNG).
+
+#### If an image is uploaded:
+
+1. The image is read and converted to a format suitable for processing with OpenCV.
+2. The image undergoes grayscale conversion (optional)
+3. The image is binarized utilizing Otsu's thresholding.
+4. Original image displayed
+5. OCR / ML is executed on the preprocessed image to extract text, utilizing Tesseract.
+6. The extracted text is displayed in a text area in the app.
+""")
+
 
 # Upload the image
 uploaded_file = st.file_uploader("Please choose an image...", type=['jpg', 'png'])
