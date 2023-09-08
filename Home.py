@@ -18,7 +18,8 @@ def show_image(image):
     plt.show()
 
 st.title('ID Card Verification Demo - Basic')
-st.header('Overview')'
+st.header('Overview')
+
 st.markdown("""
 ### Libraries Used
 
