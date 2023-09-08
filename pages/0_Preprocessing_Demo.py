@@ -1,53 +1,88 @@
+import cv2
+import easyocr
+import keras_ocr
+import matplotlib.pyplot as plt
+import numpy as np
+import pytesseract as tess
 import streamlit as st
 from PIL import Image
-import cv2
-import matplotlib.pyplot as plt
-import pytesseract
-import numpy as np
 
-# Function to read an image from an uploaded file
-def read_image(uploaded_file):
-    return Image.open(uploaded_file)
+st.title("Testing OCR libraries on code snippets")
 
-# Function to write text to a Python file
-def write_text_to_file(text, file_path):
-    with open(file_path, 'w') as file:
-        file.write(text)
-
-# Upload the image
-uploaded_file = st.file_uploader("Choose an image...", type=['jpg', 'png'])
+uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Read the uploaded image
-    img = read_image(uploaded_file)
-    image = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+    with st.sidebar:
+        st.header("Configuration")
+        select_tesseract = st.checkbox("Compute tesseract")
+        select_keras = st.checkbox("Compute keras-ocr")
+        select_easyocr = st.checkbox("Compute easyocr")
+    
+    image = Image.open(uploaded_file).convert("RGB")
+    np_image = np.array(image)
 
-    # Convert the image to grayscale
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    if select_tesseract:
+        compute_tesseract(np_image)
+    if select_keras:
+        compute_keras(np_image)
+    if select_easyocr:
+        compute_easyocr(np_image)
 
-    # Binarize the image using Otsu's thresholding
-    _, binarized_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-    # Display the original and preprocessed images
-    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-    axes[0].imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-    axes[0].set_title("Original Image")
-    axes[0].axis('off')
+def compute_tesseract(np_image):
+    """
+    https://www.opcito.com/blogs/extracting-text-from-images-with-tesseract-ocr-opencv-and-python
+    https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html
+    """
+    rgb_image = cv2.cvtColor(np_image, cv2.COLOR_BGR2RGB)
+    gray_image = cv2.cvtColor(np_image, cv2.COLOR_BGR2GRAY)
+    threshold_img = cv2.threshold(
+        gray_image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU
+    )[1]
+    inverted_img = cv2.bitwise_not(threshold_img)
 
-    axes[1].imshow(binarized_image, cmap='gray')
-    axes[1].set_title("Preprocessed Image")
-    axes[1].axis('off')
+    def _compute_ocr(label, img):
+        custom_oem_psm_config = r"--oem 3 --psm 6"
+        text = tess.image_to_string(img, config=custom_oem_psm_config)
+        st.subheader(label)
+        c1, c2 = st.columns((1, 2))
+        c1.image(img)
+        c2.code(text)
 
-    plt.tight_layout()
+    _compute_ocr("BGR image", np_image)
+    _compute_ocr("RGB image", rgb_image)
+    _compute_ocr("Binary image", threshold_img)
+    _compute_ocr("Inverted image", inverted_img)
+
+
+def compute_keras(np_image):
+    """
+    Keras-ocr
+    """
+    pipeline = keras_ocr.pipeline.Pipeline()
+    images = [np_image]
+    prediction_groups = pipeline.recognize(images)
+
+    fig, ax = plt.subplots(figsize=(20, 20))
+    keras_ocr.tools.drawAnnotations(
+        image=images[0], predictions=prediction_groups[0], ax=ax
+    )
+
     st.pyplot(fig)
 
-    # OCR to get text from the preprocessed image
-    text = pytesseract.image_to_string(binarized_image)
-    
-    # Display the OCR text in the Streamlit app
-    st.text_area("Extracted Text", text)
 
-    # Write the OCR text to a Python file
-    if st.button('Save Text to File'):
-        write_text_to_file(text, 'Preprocessing.py')
-        st.success('Text has been written to Preprocessing.py')
+def compute_easyocr(np_image):
+    rgb_image = cv2.cvtColor(np_image, cv2.COLOR_BGR2RGB)
+    gray_image = cv2.cvtColor(np_image, cv2.COLOR_BGR2GRAY)
+    threshold_img = cv2.threshold(
+        gray_image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU
+    )[1]
+    inverted_img = cv2.bitwise_not(threshold_img)
+
+    reader = easyocr.Reader(["en"], gpu=False)
+    resp = reader.readtext(inverted_img, detail=0, paragraph=False)
+
+    st.subheader("EasyOCR")
+    c1, c2 = st.columns((1, 2))
+    c1.image(inverted_img)
+    c2.write(resp)
