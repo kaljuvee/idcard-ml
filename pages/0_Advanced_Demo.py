@@ -8,7 +8,28 @@ import streamlit as st
 from PIL import Image
 
 st.title("ID Verification Demo - Advanced")
+st.markdown(
+    """
+    ## Instructions
 
+    1. **Upload an Image**: Use the upload button to upload an image containing the text you want to analyze.
+    2. **Select OCR Libraries**: Use the checkboxes in the sidebar to select which OCR (Optical Character Recognition) libraries you want to use for text extraction.
+    3. **View Results**: After selecting the libraries, view the results in the main panel. The results will showcase text extracted using different image processing techniques such as RGB conversion, binary thresholding, and inversion.
+    
+    ## OCR Libraries Used
+    - **Tesseract**: An OCR engine that works with various image processing techniques.
+    - **Keras-OCR**: A pre-trained OCR model using Keras and TensorFlow.
+    - **EasyOCR**: A ready-to-use OCR with deep learning.
+    
+    ## Image Processing Techniques
+    - **BGR to RGB Conversion**: Converting the image from BGR to RGB color space.
+    - **Grayscale**: Converting the image to grayscale to remove color information.
+    - **Binary Thresholding**: Applying a binary threshold to segment the text from the background.
+    - **Inversion**: Inverting the colors of the image to highlight the text.
+    
+    *The links in the function docstrings provide more information on improving OCR quality and the OCR engines themselves.*
+    """
+)
 uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
