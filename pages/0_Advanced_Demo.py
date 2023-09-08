@@ -7,7 +7,7 @@ import pytesseract as tess
 import streamlit as st
 from PIL import Image
 
-st.title("Testing OCR libraries on code snippets")
+st.title("ID Verification Demo - Advanced")
 
 uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
