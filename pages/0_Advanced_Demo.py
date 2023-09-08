@@ -30,25 +30,6 @@ st.markdown(
     *The links in the function docstrings provide more information on improving OCR quality and the OCR engines themselves.*
     """
 )
-uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
-
-if uploaded_file is not None:
-    with st.sidebar:
-        st.header("Configuration")
-        select_tesseract = st.checkbox("Compute tesseract")
-        select_keras = st.checkbox("Compute keras-ocr")
-        select_easyocr = st.checkbox("Compute easyocr")
-    
-    image = Image.open(uploaded_file).convert("RGB")
-    np_image = np.array(image)
-
-    if select_tesseract:
-        compute_tesseract(np_image)
-    if select_keras:
-        compute_keras(np_image)
-    if select_easyocr:
-        compute_easyocr(np_image)
-
 
 def compute_tesseract(np_image):
     """
@@ -107,3 +88,21 @@ def compute_easyocr(np_image):
     c1, c2 = st.columns((1, 2))
     c1.image(inverted_img)
     c2.write(resp)
+uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+
+if uploaded_file is not None:
+    with st.sidebar:
+        st.header("Configuration")
+        select_tesseract = st.checkbox("Compute tesseract")
+        select_keras = st.checkbox("Compute keras-ocr")
+        select_easyocr = st.checkbox("Compute easyocr")
+    
+    image = Image.open(uploaded_file).convert("RGB")
+    np_image = np.array(image)
+
+    if select_tesseract:
+        compute_tesseract(np_image)
+    if select_keras:
+        compute_keras(np_image)
+    if select_easyocr:
+        compute_easyocr(np_image)
