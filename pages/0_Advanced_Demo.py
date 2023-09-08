@@ -42,6 +42,24 @@ def compute_tesseract(np_image):
         gray_image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU
     )[1]
     inverted_img = cv2.bitwise_not(threshold_img)
+    
+    def extract_fields(text):
+    fields = [
+        "SURNAME", "GIVEN NAME", "DATE OF EXPIRY", 
+        "DOCUMENT NUMBER", "CITIZENSHIP", "DATE OF BIRTH", "PERSONAL CODE"
+    ]
+    extracted_fields = {}
+    
+    for field in fields:
+        try:
+            value = text.split(field)[1].split('\n')[0]
+            extracted_fields[field] = value.strip()
+        except (IndexError, AttributeError):
+            extracted_fields[field] = "Not found"
+    
+    st.subheader("Extracted Fields")
+    for field, value in extracted_fields.items():
+        st.text(f"{field}: {value}")
 
     def _compute_ocr(label, img):
         custom_oem_psm_config = r"--oem 3 --psm 6"
@@ -50,6 +68,8 @@ def compute_tesseract(np_image):
         c1, c2 = st.columns((1, 2))
         c1.image(img)
         c2.code(text)
+        # Call the field extraction function here
+        extract_fields(text)
 
     _compute_ocr("BGR image", np_image)
     _compute_ocr("RGB image", rgb_image)
