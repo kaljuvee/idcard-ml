@@ -4,3 +4,6 @@ pytesseract
 opencv-python
 matplotlib
 streamlit
+keras_ocr
+easyocr
+tensorflow-hub
