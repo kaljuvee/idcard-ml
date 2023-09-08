@@ -69,7 +69,7 @@ def compute_tesseract(np_image):
         c1.image(img)
         c2.code(text)
         # Call the field extraction function here
-        extract_fields(text)
+        # extract_fields(text)
 
     _compute_ocr("BGR image", np_image)
     _compute_ocr("RGB image", rgb_image)
