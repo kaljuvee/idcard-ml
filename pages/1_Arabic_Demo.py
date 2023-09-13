@@ -58,7 +58,7 @@ if uploaded_file is not None:
         output_path = 'output_image.png'
         
         # Extract text using pytesseract
-        text = pytesseract.image_to_string(img, lang='ara')
+        text = pytesseract.image_to_string(img, lang='en')
         st.text_area("Extracted Text", text)
         
         # Save and display the image using matplotlib
