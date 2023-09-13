@@ -17,7 +17,7 @@ def show_image(image):
     """Save the image plot to a file."""
     plt.show()
 
-st.title('ID Card Verification Demo - Basic')
+st.title('ID Card Verification - Arabic Demo')
 st.header('Overview')
 
 st.markdown("""
